@@ -1,0 +1,44 @@
+# OMK DEV Dockerfile - Optimized for Google Cloud Run
+
+FROM python:3.13-slim AS builder
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Production stage
+FROM python:3.13-slim
+
+WORKDIR /app
+
+# Copy installed packages from builder
+COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+# Copy source code
+COPY . .
+
+# Create non-root user
+RUN useradd -m -u 1001 omk dev && \
+    chown -R omk:omk /app
+
+USER omk
+
+# Cloud Run uses PORT env var (default 8080)
+ENV PORT 8080
+ENV PYTHONUNBUFFERED 1
+EXPOSE 8080
+
+# Start with uvicorn
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "1"]

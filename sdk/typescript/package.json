@@ -1,0 +1,30 @@
+{
+  "name": "@omk/dev-sdk",
+  "version": "1.0.0",
+  "description": "TypeScript SDK for OMK DEV autonomous development assistant",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "ai",
+    "development",
+    "assistant",
+    "automation",
+    "bug-fixing"
+  ],
+  "author": "OMK Hive Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mromk94/omk-dev.git"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "jest": "^29.0.0"
+  }
+}
